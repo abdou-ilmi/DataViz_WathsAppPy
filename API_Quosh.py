@@ -351,7 +351,7 @@ if Partie==dif_parti[0]:
         col1, col2 = st.columns(2)
         with col1:
              echange_journalier=week_activity_map(liste_membre, df)
-             fig, ax = plt.subplots(figsize=(7,4))
+             fig, ax = plt.subplots(figsize=(12,8))
              ax.bar(echange_journalier.index, echange_journalier.values, color=colors)
              plt.title('Les jours où le groupe est plus actif',
               fontsize=15,color='grey')
@@ -359,7 +359,7 @@ if Partie==dif_parti[0]:
              st.pyplot(fig)
         with col2:
              echange_mois=month_activity_map(liste_membre, df)
-             fig, ax = plt.subplots(figsize=(7,4))
+             fig, ax = plt.subplots(figsize=(12,8))
              ax.bar(echange_mois.index, echange_mois.values, color=colors)
              plt.title('Les mois où le groupe est plus actif',
               fontsize=15,color='grey')
