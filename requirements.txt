@@ -5,6 +5,3 @@ urlextract
 wordcloud
 pandas
 emoji
-local
-locale.setlocale(locale.LC_TIME,'')
-datetime
