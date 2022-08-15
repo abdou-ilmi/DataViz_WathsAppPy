@@ -328,7 +328,7 @@ Partie=st.sidebar.selectbox('Menu',options=dif_parti)
 if Partie==dif_parti[0]:
     st.info('Visualisation de DataViz de Quosh & United Boss')
 
-    options=['les membres les plus actifs','journée et mois les plus actifs','Heatmap du groupe',
+    options=['les membres les plus actifs','Conversation hebdomadaire','Heatmap du groupe',
              'nuage des mots','emojis les plus utilisés','les mots les plus utilisés']
     choix=st.sidebar.selectbox('Choisisez votre DataViz', options=options)
     #st.write('Analyse: ', choix)
@@ -348,23 +348,22 @@ if Partie==dif_parti[0]:
             with col2:
               st.dataframe(new_df)
     elif choix==options[1]: 
+        daily=daily_timeline(liste_membre, df)
+        df_max=daily.sort_values('message',ascending = False)
+        table= pd.DataFrame(list(zip(list(df_max.date_seul[0:3]),df_max.message[0:3])),
+            columns = ['Date','nombre de message'])
         col1, col2 = st.columns(2)
         with col1:
              echange_journalier=week_activity_map(liste_membre, df)
-             fig, ax = plt.subplots(figsize=(12,8))
+             fig, ax = plt.subplots()
              ax.bar(echange_journalier.index, echange_journalier.values, color=colors)
-             plt.title('Les jours où le groupe est plus actif',
+             plt.title('Conversation hebdomadaire du groupe',
               fontsize=15,color='grey')
              plt.ylabel('nombre de messages')
              st.pyplot(fig)
         with col2:
-             echange_mois=month_activity_map(liste_membre, df)
-             fig, ax = plt.subplots(figsize=(12,8))
-             ax.bar(echange_mois.index, echange_mois.values, color=colors)
-             plt.title('Les mois où le groupe est plus actif',
-              fontsize=15,color='grey')
-             plt.ylabel('nombre de messages')
-             st.pyplot(fig);
+             st.markdown("<h4 style='text-align: center; color: grey;'>Les trois jours les plus actifs.</h4>", unsafe_allow_html=True)
+             st.write(table)
     elif choix==options[2]:
         #st.markdown("<h3 style='text-align: center; color: grey;'>Les heures des conversations du groupe en fonction des jours de la semaines.</h3>", unsafe_allow_html=True)
         carte_chaleur_echange=activity_heatmap(liste_membre,df)
@@ -412,7 +411,7 @@ else:
     liste=liste_membre[1:]
     membre=st.sidebar.selectbox('Membre', options=liste)
     if membre in liste:
-        options=['courbe de conversation','journée et mois les plus actifs','Heatmap de chaque membre',
+        options=['courbe de conversation','Conversation hebdomadaire','Heatmap de chaque membre',
                  'nuage des mots','Les mots les plus utilisés']
         choix=st.sidebar.selectbox('DataViz', options=options)
         if choix==options[0]:
@@ -438,23 +437,16 @@ else:
                     
         elif choix==options[1]:
             echange_journalier=week_activity_map(membre, df)
-            col1, col2 = st.columns(2)
+           # col1, col2 = st.columns(2)
             if echange_journalier.shape[0]>2:
-                with col1:
-                     fig, ax = plt.subplots(figsize=(7,4))
-                     ax.bar(echange_journalier.index, echange_journalier.values, color=colors)
-                     plt.title(f'conversation hebdomadaire de Mr {membre} ',
+               fig, ax = plt.subplots(figsize=(7,4))
+               ax.bar(echange_journalier.index, echange_journalier.values, color=colors)
+               plt.title(f'conversation hebdomadaire de Mr {membre} ',
                                fontsize=15,color='grey')
-                     plt.ylabel('nombre de messages')
-                     st.pyplot(fig)
-                with col2:
-                     echange_mois=month_activity_map(membre, df)
-                     fig, ax = plt.subplots(figsize=(7,4))
-                     ax.bar(echange_mois.index, echange_mois.values, color=colors)
-                     plt.title(f'conversation mensuelle de Mr {membre} ',
-                      fontsize=15,color='grey')
-                     plt.ylabel('nombre de messages')
-                     st.pyplot(fig);                    
+               plt.ylabel('nombre de messages')
+               st.pyplot(fig)
+                
+                                        
             else:
                 st.write(f"Désolé Mr {membre}, vous n'etes pas un membre active du groupe Quosh.",color='red')
                     
